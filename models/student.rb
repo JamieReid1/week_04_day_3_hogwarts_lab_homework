@@ -1,3 +1,4 @@
+require('pry')
 require_relative('../db/sql_runner')
 
 class Student
@@ -33,8 +34,13 @@ class Student
   end
 
   def house()
-    house = House.find(@house_id)
-    return house
+    sql = "SELECT houses.* FROM
+           students INNER JOIN houses
+           ON students.house_id = houses.id WHERE students.id = $1"
+    values = [@id]
+    house = SqlRunner.run(sql, values)
+    result = House.new(house.first)
+    return result.name
   end
 
   def update()
